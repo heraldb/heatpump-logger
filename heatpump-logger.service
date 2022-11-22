@@ -1,0 +1,15 @@
+[Unit]
+Description=Log heatpump data to Domoticz and file
+#After=multi-user.target
+After=domoticz.service
+
+[Service]
+User=pi
+Group=pi
+Type=simple
+Restart=always
+ExecStart=/usr/bin/python3 ./heatpump-logger.py
+WorkingDirectory=/home/pi
+
+[Install]
+WantedBy=multi-user.target
