@@ -28,7 +28,7 @@ The script is desgned to run as a process in the background. On a linux system y
 
 1. Enable the webserver on your Alpha Innotec heatpump.
 1. If you don't have an existing Domoticz service running, create one.
-1. Copy heatpump-logger to the correct location (I use /home/pi) and adjust value in the top of the code (like ip addresses). Check also the data that will be collected. See the "pages" dictionary in the code for that.
+1. Copy heatpump-logger to the correct location (I use /home/pi) and copy heatpump-example.ini to heatpump.ini in the same directory as the logger script. Adjust the ini file (note the ip addresses). In the logger script, check the data that will be collected. See the "pages" dictionary for that.
 1. Create deviceIDs in Domoticz [see this](http://domoticx.com/internet-of-things-domoticz-data-ontvangen-vanuit-andere-bron/) for all data points
 1. Copy the heatpump-logger.service file to the correct directory (typically /etc/systemd/system/) and check working directory.
 1. Run `systemctl enable --now heatpump-logger.service` to start te service.

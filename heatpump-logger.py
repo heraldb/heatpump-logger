@@ -7,14 +7,15 @@ from datetime import datetime
 import urllib.request
 import sys
 import os
+import configparser
 
-# adjust lines below ------
-heatpumpIP = "192.168.178.164"
-domoIP = '192.168.178.110'  # domoticz server
-INTERVAL = 5    # interval for pushing data to domoticz (seconds)
-TEST = (os.environ.get('HOSTNAME') == "xps13b")  # dev hostname
-LOGFILE = "./heatpump.log"  # five minute logfile
-# -------------------------
+config = configparser.ConfigParser()
+config.read('./heatpump.ini')
+heatpumpIP = config['NETWORK']['HEATPUMP_IP']
+domoIP = config['NETWORK']['DOMOTICZ_IP']
+INTERVAL = config['LOGGING']['INTERVAL']
+LOGFILE = config['LOGGING']['LOGFILE']
+TEST = config['DEBUG']['TEST']
 
 
 def ft(v): return v[0:-2]   # strip ' °C'
