@@ -13,7 +13,7 @@ config = configparser.ConfigParser()
 config.read('./heatpump-logger.ini')
 heatpumpIP = config['NETWORK']['HEATPUMP_IP']
 domoIP = config['NETWORK']['DOMOTICZ_IP']
-INTERVAL = config['LOGGING']['INTERVAL']
+INTERVAL = config.getint('LOGGING', 'INTERVAL')
 LOGFILE = config['LOGGING']['LOGFILE']
 TEST = config.getboolean('DEBUG', 'TEST')
 
