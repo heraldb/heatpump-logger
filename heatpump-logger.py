@@ -10,7 +10,7 @@ import os
 import configparser
 
 config = configparser.ConfigParser()
-config.read('./heatpump.ini')
+config.read('./heatpump-logger.ini')
 heatpumpIP = config['NETWORK']['HEATPUMP_IP']
 domoIP = config['NETWORK']['DOMOTICZ_IP']
 INTERVAL = config['LOGGING']['INTERVAL']
