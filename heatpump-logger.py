@@ -13,9 +13,9 @@ config = configparser.ConfigParser()
 config.read('./heatpump-logger.ini')
 heatpumpIP = config['NETWORK']['HEATPUMP_IP']
 domoIP = config['NETWORK']['DOMOTICZ_IP']
-INTERVAL = config.getint('LOGGING', 'INTERVAL')
+INTERVAL = config['LOGGING'].getint('INTERVAL')
 LOGFILE = config['LOGGING']['LOGFILE']
-TEST = config.getboolean('DEBUG', 'TEST')
+TEST = config['DEBUG'].getboolean('TEST')
 
 
 def ft(v): return v[0:-2]   # strip ' °C'
