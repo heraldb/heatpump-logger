@@ -15,7 +15,7 @@ heatpumpIP = config['NETWORK']['HEATPUMP_IP']
 domoIP = config['NETWORK']['DOMOTICZ_IP']
 INTERVAL = config['LOGGING']['INTERVAL']
 LOGFILE = config['LOGGING']['LOGFILE']
-TEST = config['DEBUG']['TEST']
+TEST = config.getboolean('DEBUG', 'TEST')
 
 
 def ft(v): return v[0:-2]   # strip ' °C'
