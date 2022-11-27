@@ -11,11 +11,16 @@ import configparser
 
 config = configparser.ConfigParser()
 config.read('./heatpump-logger.ini')
-heatpumpIP = config['NETWORK']['HEATPUMP_IP']
-domoIP = config['NETWORK']['DOMOTICZ_IP']
-INTERVAL = config['LOGGING'].getint('INTERVAL')
-LOGFILE = config['LOGGING']['LOGFILE']
-TEST = config['DEBUG'].getboolean('TEST')
+for option in ['heatpumpIP', 'domoticzIP']:
+    if not config.has_option('network', option):
+        raise Exception(f'missing option {option} in .ini file')
+heatpumpIP = config.get('network', 'heatpumpIP')
+domoticzIP = config.get('network', 'domoticzIP')
+interval = config.getint('logging', 'interval', fallback=5)
+logfile = config.get('logging', 'logfile', fallback="./heatpump-logger.log")
+test = config.getboolean('development', 'test', fallback=False)
+if len(heatpumpIP) == 0 or len(domoticzIP) == 0:
+    raise Exception('Provide IP addresses in .ini file')
 
 
 def ft(v): return v[0:-2]   # strip ' °C'
@@ -53,11 +58,11 @@ pages = {
 
 
 def push(domoID, value):
-    if TEST:
+    if test:
         print(f"pushing {value} to device {domoID}")
     else:
         try:
-            url = (f"http://{domoIP}/json.htm?type=command&param=udevice&"
+            url = (f"http://{domoticzIP}/json.htm?type=command&param=udevice&"
                    f"idx={domoID}&nvalue=0&svalue={value}")
             result = urllib.request.urlopen(url, timeout=1)
             # print(result.getcode())
@@ -105,10 +110,10 @@ def parse_page(menu_id, page):
 
 def log(now, values):
     s = f'{str(now)[0:-7]} {" ".join(values)}\n'
-    if TEST:
+    if test:
         print(s, end='')
-    elif LOGFILE:
-        with open(LOGFILE, "a") as f:
+    elif logfile:
+        with open(logfile, "a") as f:
             f.write(s)
 
 
@@ -122,7 +127,7 @@ result = ws.recv()
 now = datetime.now()
 last_print = -1
 while True:
-    if TEST or (now.minute % 5 == 0 and last_print != now.minute):
+    if test or (now.minute % 5 == 0 and last_print != now.minute):
         doprint = True
         last_print = now.minute
     else:
@@ -134,8 +139,8 @@ while True:
         values += parse_page(menu_energy_id, pages['energy'])
         log(now, values)
 
-    if TEST:
+    if test:
         break
 
-    sleep(INTERVAL)
+    sleep(interval)
     now = datetime.now()
