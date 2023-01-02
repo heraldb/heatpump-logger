@@ -16,19 +16,25 @@ Data is obtained from a Alpha Innotec WZSV heatpump, using the web interface. Yo
 
 ## Output of data
 
-Since I happened to run Domoticz already for my "Slimme meter" (common in the Netherlands to read data about usage of electricity and gas), it seamed a good idea to send the data Domoticz. In order to do this, you need to prepaire Domoticz for receiving data. I used this Dutch guide: http://domoticx.com/internet-of-things-domoticz-data-ontvangen-vanuit-andere-bron/](http://domoticx.com/internet-of-things-domoticz-data-ontvangen-vanuit-andere-bron/). Basically you need te create so called device numbers which can be used as a reference when you push data to Domoticz.
+Since I happened to run Domoticz already for my "Slimme meter" (common in the Netherlands to read data about usage of electricity and gas), it seamed a good idea to send the data Domoticz. In order to do this, you need to prepaire Domoticz for receiving data. I used this Dutch guide: http://domoticx.com/internet-of-things-domoticz-data-ontvangen-vanuit-andere-bron/](http://domoticx.com/internet-of-things-domoticz-data-ontvangen-vanuit-andere-bron/). Basically you need to create so called device numbers which can be used as a reference when you push data to Domoticz.
 
-Apart from pushing data to Domoticz, I personally wanted to log the data to file as well, a 5 minute intervals. This way would me enable to do some analyses over longer time (note that Domotics will not keep detailed data for longer than a week.
+Apart from pushing data to Domoticz, I personally wanted to log the data to file as well, with 5 minute intervals. This way would me enable to do some analyses over longer time (note that Domotics will not keep detailed data for longer than a week).
 
 ## The heatpump-logger script
 
 The script is desgned to run as a process in the background. On a linux system you can run it as a systemd service.
 
+## Preparing / testing
+
+1. Enable the webserver on your Alpha Innotec heatpump. I would suggest to look around on the web pages this webserver offers. These pages will be used to obtain the data for logging. So you can decide about what you would to log.
+1. If you don't have an existing Domoticz service running, create one. I would recommend to run domoticz and the heatpump-logger on a raspberry pi for 24/7 logging.
+1. `cp heatpump-logger-example.ini heatpump-logger.ini` and put the IP addresses of the heatpump and the domoticz server in place and give "test" the value "True" (!).
+1. Check the `pages` dictionary in the `heatpump-logger.py` script. If the web interface of your heatpump is not in the Dutch language, you will at least have to replace the Duth labels. And maybe you prefer to make another selection of data for logging. Note that the numbering of the items start with "0", so the 6th item on a web page is specified with field number 5.
+1. Create deviceIDs in Domoticz [see this](http://domoticx.com/internet-of-things-domoticz-data-ontvangen-vanuit-andere-bron/) for all data points and put the deviceID's in the `pages` dictionary of `heatpump-logger.py`.
+1. Run the script and check the output.
+
 ## Installation
 
-1. Enable the webserver on your Alpha Innotec heatpump.
-1. If you don't have an existing Domoticz service running, create one.
-1. Copy heatpump-logger to the correct location (I use /home/pi) and copy heatpump-example.ini to heatpump.ini in the same directory as the logger script. Adjust the ini file (note the ip addresses). In the logger script, check the data that will be collected. See the "pages" dictionary for that. Note the language dependend titles in the "pages" dictionary as well as in the parseNaviagtion function. Depending the language of the webinterface of the heatpump, you might need to change them.
-1. Create deviceIDs in Domoticz [see this](http://domoticx.com/internet-of-things-domoticz-data-ontvangen-vanuit-andere-bron/) for all data points
+1. Copy heatpump-logger and heatpump.ini to the correct location (I use /home/pi). Make sure that in the .ini file "test" has the value "False", otherwise it can not run as a service.
 1. Copy the heatpump-logger.service file to the correct directory (typically /etc/systemd/system/) and check working directory.
-1. Run `systemctl enable --now heatpump-logger.service` to start te service.
+1. Run `systemctl enable --now heatpump-logger.service` to start the service.
